@@ -1,10 +1,52 @@
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
+    initializeTheme();
     initializeAnimations();
     initializeCardInteractions();
     initializeParallaxEffect();
     addGlitchEffect();
 });
+
+// Theme toggle: light/dark mode with localStorage persistence and system preference detection
+function initializeTheme() {
+    const toggleBtn = document.getElementById('themeToggle');
+    const icon = toggleBtn.querySelector('i');
+
+    // Determine initial theme: saved preference > system preference > dark
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        icon.classList.replace('fa-moon', 'fa-sun');
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+            document.documentElement.removeAttribute('data-theme');
+            icon.classList.replace('fa-sun', 'fa-moon');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            icon.classList.replace('fa-moon', 'fa-sun');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            if (e.matches) {
+                document.documentElement.removeAttribute('data-theme');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            }
+        }
+    });
+}
 
 // Initialize card animations
 function initializeAnimations() {
