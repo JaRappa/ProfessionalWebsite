@@ -144,6 +144,10 @@ body {
     animation-delay: 0.3s;
 }
 
+.project-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
 .project-card::before {
     content: '';
     position: absolute;
